@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숫자야구</title>
+</head>
+<!--
+    숫자야구 게임.
+    규칙은 컴퓨터가 숫자 0을 제외한 1부터 9까지의 1자릿수를 4개, 중복되지않게 뽑은 후 게임 시작.
+    플레이어는 매 턴마다 입력란에 숫자 0을 제외한 4자릿수 숫자를 입력.
+    컴퓨터가 뽑은 숫자에 자신의 숫자중 같은 숫자가 있다면, ball값을, 자릿수마저 같다면 strike값을 1씩 올려서 플레이어에게 보여줌.
+    플레이어는 자신이 입력한 숫자에서 strike와  ball값을 받은 후 턴이 종료, 다음턴에서 또다른 4자리 숫자를 입력하면서 컴퓨터의 숫자 4개가 무엇일지 추리하는 게임.
+    턴은 총 10턴이며, 10턴안에 입력란에 정답(컴퓨터가 뽑은 4개의 숫자와 정확한 위치)을 입력 못할 시 플레이어의 패배.
+
+    주의
+    컴퓨터는 0을 포함하거나 중복된 숫자를 정답으로 가질 수 없음. (각기 다른 1부터 9까지의 정수 4개만 가능)
+    이에따라 플레이어도 0을 포함하거나 중복된 숫자, 또는 4자리를 벗어나는 숫자, 음수를 입력해서는 안됨. (입력시 경고문이 출력)
+-->
+<body>
+    <script>
+        var card = []; // 정답을 넣어놓을 배열.
+        var count = 0; // 게임 턴수. 10턴이 넘어가면 패배.
+        var value = 0; // 플레이어의 입력값.
+        var strike = 0; // 스트라이크 횟수.
+        var ball = 0; // 볼 횟수.
+
+        // card 변수에 중복되는 숫자와 0이 포함되지 않는 4개의 숫자를 뽑기위한 반복문.
+        while(strike < 50){ // while문을 50번 반복함. strike 변수를 잠시 빌려썼음.
+            strike++;
+            value = Math.floor(Math.random()*10); // 0부터 9까지의 숫자를 랜덤하게 뽑아 value값에 넣음. value 변수를 잠시 빌려썼음.
+
+            //card 배열의 길이만큼 반복함. 맨 처음에는 길이가 0이니 실행이 안되며, 두번째부터는 value값과 card배열의 요소들을 하나씩 비교하면서 중복된 숫자가 있는지 체크함.
+            for (var i = 0; i < card.length; i++){
+                if (card[i] == value){ // 중복된 숫자가 있을시,
+                    value = 0; // value를 0으로 만듦.
+                }
+            }
+
+            //value값이 처음부터 0이 뽑혔거나, 이미 card배열의 숫자와 중복된 숫자가 뽑혀서 위의 for문에서 값이 0이 되었을경우, 아래 과정이 생략되며 반복문을 다시 실행하게 됨.
+            if (value != 0){  // value값이 0이 아닐경우, (즉 숫자가 0이 아니거나, 중복된 숫자가 없을경우 실행)
+                card[count] = value; // card배열의 count변수값의 자리에 value값을 넣음. count변수는 0으로 초기화 되어있기에 첫번째 자리부터 값이 들어감. count변수는 잠시 빌려씀.
+                count++; // count변수를 1씩 증가시키면서 다음 반복문에 0이 아니며 중복되지 않는 숫자가 생길시 다음 card배열의 자리에 넣도록 유도함.
+            }
+
+            if (count >= 4) break; // count변수가 4일경우, 즉 card배열의 4개의 숫자가 정해질경우, 해당 반복문을 벗어남.
+        }
+
+        if (strike >= 50){ // count가 4를 못채우고, 즉 4개의 알맞은 숫자를 뽑지 못하고, while반복문이 50회 이상 반복되어 반복문이 종료되었을때,
+            alert("REROAD");
+            window.location.reload; // 페이지를 새로고침함.
+        }
+
+        //해당 시점에서 card배열은 알맞은 4개의 숫자를 가지고 정답 역할을 수행할 수 있음.
+        //위에서 빌려 쓴 count변수와 value변수의 값에 0을 넣음으로서 앞으로의 게임에서 이용되도록 함. (strike는 밑의 반복문 안에서 조정해줄것임.)
+        count = 0;
+        value = 0;
+
+        alert("You have 10 chances to enter numbers");
+
+        //본격적인 플레이어가 상호작용 할 수 있는 게임을 위한 반복문.
+        while(count < 10){ // count변수는 플레이어의 턴수를 의미함. 10턴이 지날경우 플레이어의 패배.
+            strike = 0; // 매 턴수마다 strike변수와 ball변수를 초기화.
+            ball = 0;
+            count++; // 시작과 동시에 턴수를 추가함. (count변수는 이 이후로 쭉 턴수를 나타내는 변수로만 이용.)
+            alert("TRY : " + count); // 반복문 초기에 턴수를 올려줌으로서 0부터 9턴이 아닌 1부터 10턴으로 표기됨.
+            value = prompt("Enter your value. (four digit number form 1 to 9)"); // 플레이어에게 값을 입력받고,
+            value = parseInt(value); // 그 값을 정수형으로 변환.
+
+            // 규칙에 따라 플레이어가 4자리를 넘어가거나, 음수를 입력하면 경고를 띄워줌.
+            if (value < 0 || value > 9999) { // (4이하의 자릿수는 해당 자릿수가 0으로 표기되기에 밑의 0 체크에서 걸러짐.)
+                alert("Out of range. Check your number.");
+                count--; // 플레이어가 잘못된 값을 입력한 경우 턴수를 소모시키지 않도록 함.
+                continue; // 다시 입력하도록 while반복문 실행.
+            }
+
+            var answer = []; // 플레이어가 입력한 value값을 4개의 개별적인 숫자로 나눠 answer배열에 넣음. 이 배열은 정답인 card배열과 비교하는데 쓸것.
+            answer[0] = Math.floor(value / 1000); // 첫번째 자리
+            value = value % 1000;
+            answer[1] = Math.floor(value / 100); // 두번째 자리
+            value = value % 100;
+            answer[2] = Math.floor(value / 10); // 세번째 자리
+            value = value % 10;
+            answer[3] = value; // 네번째 자리
+
+            var zCheck = 0; // 플레이어가 숫자 0을 입력했는지에 대한 여부를 나타내는 변수.
+            var oCheck = 0; // 플레이어가 중복값을 입력했는지에 대한 여부를 나타내는 변수.
+            // 위에서 만든 플레이어의 값을 담고있는 answer배열의 요소를 하나씩 체크할것.
+            for (var i = 0; i < answer.length; i++){ // answer배열은 항상 4의 크기를 가질테니, 4번 반복함. 
+                if (answer[i] == 0){ // answer의 요소가 0일때, 규칙에 따라 플레이어가 숫자 0을 포함시켜서 입력하면 경고를 띄워줌.
+                    alert("Don't enter '0'. Check your number.");
+                    count--; // 플레이어가 잘못된 값을 입력한 경우 턴수를 소모시키지 않도록 함.
+                    zCheck++; // 0이 확인되었으니 zCheck값을 올려줌.
+                    break; // 해당 반복문을 빠져나감.
+                }
+
+                if (answer[i] == card[i]){ // 플레이어의 값과 정답의 동일한 자릿수의 숫자가 같을경우, 즉 스트라이크일경우,
+                    strike++; // strike를 증가, 밑의 이중반복문을 실행시키지 않고 바로 다음 반복문을 실행.
+                }
+                else { // 스트라이크가 아닐경우,
+                    for (var j = 0; j < card.length; j++){ // card배열과 answer배열 둘다 크기가 4일테니, 4번 반복함.
+                        if (i == j) continue; // 같은 자릿수는 위에서 스트라이크 여부를 한번 확인했고, answer값의 중복체크와 ball값의 증감여부에 계산되어서는 안되니 예외처리.
+                        if (answer[i] == answer[j]){ // 규칙에 따라 플레이어가 중복된 숫자를 입력하면 경고를 띄워줌. (같은 자리는 무조건 같은수니 위에서 예외처리.)
+                            alert("Don't enter duplicate numbers. Check your number.");
+                            count--; // 플레이어가 잘못된 값을 입력한 경우 턴수를 소모시키지 않도록 함.
+                            oCheck++; // 중복이 확인되었으니 oCheck값을 올려줌.
+                            break; // 해당 반복문을 빠져나감.
+                        }
+                        // 이중반복문으로 answer요소와 card요소를 하나씩 비교하며 같은 수가 있을경우 ball값을 증가.
+                        if (answer[i] == card[j]) ball++; // (같은 자리는 ball이 아닌 strike취급해야하니 위에서 예외처리.)
+                    }
+
+                    if (oCheck >= 1) break; // 중복을 확인한 시점이 이중반복문 시점이기에, 중복여부를 확인하고 한번더 반복문을 빠져나감.
+                }
+            }
+
+            if (zCheck >= 1 || oCheck >= 1) continue; // 위의 for반복문에서 0입력 / 중복입력이 발견되었을 시 다시 입력하도록 while반복문 실행.
+
+            if (strike >= 4){ // strike가 4이상일경우, 즉 정답일경우,
+                alert("You win. Number : " + card + " Try count : " + count); // 우승 메세지와 정답숫자, 경과된 턴수를 보여줌.
+                break; // 그리고 while반복문을 빠져나감으로서 게임 종료.
+            }
+            else { // 정답이 아닐경우,
+                alert("Your number : " + answer + " Strike : " + strike + " ball : " + ball); // 순서대로 플레이어가 입력한 숫자와 strike횟수, ball횟수를 보여줌.
+                if (count >= 10){ // 만약 이 시점에서 count가 10 이상일경우, 즉 10턴이 경과했을경우,
+                    alert("You lose. Number : " + card); // 패배 매세지와 함께 정답숫자를 보여줌.
+                    break; // 그리고 while반복문을 빠져나감으로서 게임 종료.
+                } // 정답도 아니고 턴수도 남아있다면 다시 반복.
+            }
+        }       
+    </script>
+</body>
+</html>
